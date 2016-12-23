@@ -35,7 +35,8 @@ class Predictor(object):
         if len(img.shape) == 2:
             img = img[..., np.newaxis]
 
-        img = cv2.resize(img, (96, 96))
+        # img = cv2.resize(img, (48, 48))
+        # img = cv2.resize(img, (96, 96))
         img = img.astype(np.float32)
         # img -= mean_value
         # img *= scale
@@ -88,9 +89,9 @@ def main(args):
         if img is None:
             continue
         labels = rel_path
-        feats = predictor.forward(img.copy(), args.feat_layer)
-        # feats2 = predictor.forward(img[..., ::-1], args.feat_layer)
-        # feats = np.concatenate([feats1, feats2], axis=1)
+        feats1 = predictor.forward(img.copy(), args.feat_layer)
+        feats2 = predictor.forward(img[:, ::-1], args.feat_layer)
+        feats = np.concatenate([feats1, feats2], axis=1)
         write_to_file(ffeats, flabels, feats[0], labels)
     ffeats.close()
     flabels.close()
