@@ -3,6 +3,8 @@
 
 import numpy as np
 from sklearn.decomposition import PCA
+from sklearn.cross_validation import KFold
+from sklearn.metrics import accuracy_score
 
 
 def normalize(x):
@@ -117,3 +119,40 @@ def pca(data, n_components=128):
     result = pca.transform(data)
 
     return result
+
+
+def eval_acc(threshold, diff):
+    y_true = []
+    y_predict = []
+    for d in diff:
+        same = 1 if float(d[0]) > threshold else 0
+        y_predict.append(same)
+        y_true.append(int(d[1]))
+    y_true = np.array(y_true)
+    y_predict = np.array(y_predict)
+    accuracy = accuracy_score(y_true, y_predict)
+    return accuracy
+
+
+def find_best_threshold(thresholds, predicts):
+    best_threshold = best_acc = 0
+    for threshold in thresholds:
+        accuracy = eval_acc(threshold, predicts)
+        if accuracy >= best_acc:
+            best_acc = accuracy
+            best_threshold = threshold
+    return best_threshold
+
+
+def acc(predicts, thresholds=np.arange(-1.0, 1.0, 0.005)):
+    print("...Computing accuracy.")
+    folds = KFold(n=predicts.shape[0], n_folds=10, shuffle=False)
+    accuracy = []
+    thd = []
+    for idx, (train, test) in enumerate(folds):
+        print "processing fold {}...".format(idx)
+        best_thresh = find_best_threshold(thresholds, predicts[train])
+        accuracy.append(eval_acc(best_thresh, predicts[test]))
+        thd.append(best_thresh)
+
+    return accuracy, thd
