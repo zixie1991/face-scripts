@@ -3,6 +3,7 @@
 
 import sys
 import argparse
+import random
 
 from sklearn import svm
 from sklearn import cross_validation
@@ -12,9 +13,6 @@ from util import *
 
 def get_dataset(embeddings, pairs, dist_func=L2_dist):
     '''读取数据集
-    样本保存格式：
-    #(x, y), 其中 x = [1, 2, 3, 4], y = 1
-    1 2 3 4 1\n
     '''
     X = []
     y = []
@@ -24,22 +22,35 @@ def get_dataset(embeddings, pairs, dist_func=L2_dist):
         except:
             continue
         dist = dist_func(x1, x2)
-        # if dist > 1.1 and actual_same:
-            # # print pair, dist
-            # print '{}/{}_{}.jpg'.format(pair[0], pair[0], pair[1].zfill(4))
-            # print '{}/{}_{}.jpg'.format(pair[0], pair[0], pair[2].zfill(4))
-            # continue
-
-        # if dist < 0.7 and not actual_same:
-            # # print pair, dist
-            # print '{}/{}_{}.jpg'.format(pair[0], pair[0], pair[1].zfill(4))
-            # print '{}/{}_{}.jpg'.format(pair[2], pair[2], pair[3].zfill(4))
-            # continue
         X.append([dist])
         y.append(1 if actual_same else 0)
         # print pair, dist
-
     return X, y
+
+    # shuffle data
+    t1 = range(len(X) / 2)
+    random.shuffle(t1)
+    t2 = range(len(X) / 2, len(X))
+    random.shuffle(t2)
+    i = 0
+    j = 0
+    idx = []
+    while i < len(t1) or j < len(t2):
+        if i < len(t1):
+            idx.append(t1[i])
+            i += 1
+
+        if j < len(t2):
+            idx.append(t2[j])
+            j += 1
+
+    X2 = []
+    y2 = []
+    for i in idx:
+        X2.append(X[idx[i]])
+        y2.append(y[idx[i]])
+
+    return X2, y2
 
 
 def verification_cross_validation(samples, labels, n_iter=10, test_size=0.1):
@@ -50,7 +61,7 @@ def verification_cross_validation(samples, labels, n_iter=10, test_size=0.1):
     # classifier = svm.LinearSVC()
     num_sample = len(labels)
 
-    cv = cross_validation.KFold(num_sample, n_folds=10)
+    cv = cross_validation.KFold(num_sample, n_folds=10, shuffle=False)
     # cv = cross_validation.ShuffleSplit(num_sample, n_iter=n_iter, test_size=test_size, random_state=0)
 
     scores = cross_validation.cross_val_score(classifier, samples, labels, cv=cv)
