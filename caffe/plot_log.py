@@ -23,7 +23,10 @@ def main(args):
     center_loss = 0
     for line in f:
         if check_test:
-            test_accuracy.append(float(line.strip().split(' = ')[-1]))
+            try:
+                test_accuracy.append(float(line.strip().split(' = ')[-1]))
+            except:
+                pass
             check_test = False
             check_test2 = True
         elif check_test2:
