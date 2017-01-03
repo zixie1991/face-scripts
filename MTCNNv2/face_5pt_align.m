@@ -1,7 +1,7 @@
-clear;
-face_dir='/mnt/ssd-data-1/training_set/MsCelebV1-Faces-Aligned/';
-faces='/mnt/ssd-data-2/MsCelebV1-Faces-Aligned-lighten/labeled_faces_5pt.txt';
-save_dir='/mnt/ssd-data-2/MsCelebV1-Faces-Aligned-lighten/';
+%clear;
+%face_dir='/mnt/ssd-data-1/training_set/MsCelebV1-Faces-Aligned/';
+%faces='/mnt/ssd-data-2/MsCelebV1-Faces-Aligned-lighten/labeled_faces_5pt.txt';
+%save_dir='/mnt/ssd-data-2/MsCelebV1-Faces-Aligned-lighten/';
 
 f = fopen(faces, 'r');
 

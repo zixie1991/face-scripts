@@ -1,9 +1,10 @@
-clear;
-%list of images
-root='/mnt/ssd-data-1/CASIA-WebFace-washed/';
-imglist=importdata('/mnt/ssd-data-1/training_set/CASIA-WebFace-washed-lightened/imglist.txt');
-labeled_faces='./labeled_faces.txt';
+%clear;
+%%list of images
+%root='/mnt/ssd-data-1/CASIA-WebFace-washed/';
+%imglist='/mnt/ssd-data-1/training_set/CASIA-WebFace-washed-lightened/imglist.txt';
+%labeled_faces='./labeled_faces.txt';
 
+imglist=importdata(imglist);
 %minimum size of face
 minsize=20;
 
