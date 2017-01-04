@@ -3,25 +3,30 @@
 
 
 import argparse
+import os
 
 
-def pairs_to_files(path):
-    file_idx = {}
+def splits_to_files(root, path):
+    files = set()
     with open(path, 'r') as f:
         for line in f.readlines()[1:]:
             line = line.strip().split(',')
-            if len(line) == 3:
-                yield '{}/{}_{}.jpg'.format(line[0], line[0], line[1].zfill(4))
-                yield '{}/{}_{}.jpg'.format(line[0], line[0], line[2].zfill(4))
-            elif len(line) == 4:
-                yield '{}/{}_{}.jpg'.format(line[0], line[0], line[1].zfill(4))
-                yield '{}/{}_{}.jpg'.format(line[2], line[2], line[3].zfill(4))
+
+            for parent_path in line[-3:-1]:
+                parent_path = parent_path.strip()
+                for filename in os.listdir(os.path.join(root, parent_path)):
+                    break
+
+                filename = os.path.join(parent_path, filename)
+                if filename not in files:
+                    files.add(filename)
+                    yield filename
 
 
 def main(args):
     files = set()
     with open(args.dest, 'w') as f:
-        for line in pairs_to_files(args.pairs):
+        for line in splits_to_files(args.root, args.splits):
             if line in files:
                 continue
             files.add(line)
@@ -29,8 +34,9 @@ def main(args):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="extract feats")
-    parser.add_argument("pairs", help="the pairs file")
+    parser = argparse.ArgumentParser(description="convert splits to file list")
+    parser.add_argument("root", help="the root folder")
+    parser.add_argument("splits", help="the splits file")
     parser.add_argument("dest", help="the dest file")
     args = parser.parse_args()
     main(args)
