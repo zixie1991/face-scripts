@@ -31,13 +31,13 @@ while ~feof(f)
     save_fn = [save_dir filename{1}];
     save_dn = save_dir;
     fn=strsplit(filename{1}, '/');
-    save_dn = strcat(save_dir, fn(1));
+    save_dn = save_dir;
     fn_size = size(fn);
-    for n=fn(2:fn_size(2)-1)
-        save_dn = [save_dn '/' n];
-    end
-    if exist(save_dn{1}, 'dir')  == 0
-        mkdir(save_dn{1});
+    for n=fn(1:fn_size(2)-1)
+        save_dn = strcat(save_dn, '/', n);
+        if exist(save_dn{1}, 'dir') == 0
+            mkdir(save_dn{1});
+        end
     end
     imwrite(img_cropped, save_fn);
 end
