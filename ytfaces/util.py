@@ -92,7 +92,17 @@ def load_embeddings(feats_path, labels_path):
         for idx, line in enumerate(f.readlines()):
             line = line.strip().split('/')
             line = [x.strip() for x in line]
-            embeddings['/'.join(line[-3:-1])] = feats[idx]
+            path = '/'.join(line[-3:-1])
+            if path in embeddings:
+                if len(embeddings[path]) >= 100:
+                    continue
+                embeddings[path].append(feats[idx])
+            else:
+                embeddings[path] = [feats[idx]]
+
+    for path in embeddings:
+        embeddings[path] = np.array(embeddings[path])
+        embeddings[path] = embeddings[path].mean(axis=0)
 
     return embeddings
 
