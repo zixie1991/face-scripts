@@ -14,13 +14,12 @@ def splits_to_files(root, path):
 
             for parent_path in line[-3:-1]:
                 parent_path = parent_path.strip()
-                for filename in os.listdir(os.path.join(root, parent_path)):
-                    break
+                for filename in os.listdir(os.path.join(root, parent_path))[:100]:
 
-                filename = os.path.join(parent_path, filename)
-                if filename not in files:
-                    files.add(filename)
-                    yield filename
+                    filename = os.path.join(parent_path, filename)
+                    if filename not in files:
+                        files.add(filename)
+                        yield filename
 
 
 def main(args):
